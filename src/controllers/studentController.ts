@@ -1,24 +1,27 @@
 import { NextFunction, Request, Response } from "express";
 import {
-  createUserModel,
-  findUserByEmailModel,
-  findUserByIdModel,
-  updateUserModel,
-} from "../models/userModel";
+  createStudentModel,
+  findStudentByEmailModel,
+  findStudentByIdModel,
+  updateStudentModel,
+} from "../models/studentModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { findRecruiterByEmailModel, findRecruiterByIdModel } from "../models/recruiterModel";
 
 // sign up or register
-export const signUpUser = async (
+export const signUpStudent = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const { firstname, lastname, age, email, password } = req.body;
+  const { firstname, lastname, email, password } = req.body;
   try {
     // checking if account exist
-    const userexist = await findUserByEmailModel(email);
-    if (userexist) {
+    const studentExists = await findStudentByEmailModel(email);
+    const recruiterExists = await findRecruiterByEmailModel(email);
+    
+    if (studentExists || recruiterExists ) {
       res.status(409).json("User exists");
       return;
     }
@@ -26,17 +29,16 @@ export const signUpUser = async (
     const hashPassword = bcrypt.hashSync(password, 10);
 
     // saving user details to DB
-    const user = await createUserModel({
+    const user = await createStudentModel({
       firstname,
       lastname,
-      age,
       email,
       password: hashPassword,
     });
 
     res.status(201).json({
       success: true,
-      message: "",
+      message: "Account created successfully",
       data: user,
     });
   } catch (error) {
@@ -44,37 +46,39 @@ export const signUpUser = async (
   }
 };
 
-//login
-const login = async (req: Request, res: Response, next: NextFunction) => {
-  const { email, password } = req.body;
 
+export const getProfile = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // check if user exists
-    const userExist = await findUserByEmailModel(email);
-    if (!userExist) {
-      res.status(404).json("Account not found");
-      return;
+    // Assuming your auth middleware adds `user` to req with id and role
+    const userId = req.user.id;
+    const role = req.user.role;
+
+    let user;
+
+    if (role === "Student") {
+      user = await findStudentByIdModel(userId);
+    } else if (role === "Recruiter") {
+      user = await findRecruiterByIdModel(userId);
+    } else {
+      return res.status(400).json({ message: "Invalid user role" });
     }
 
-    //check if password is valid
-    const isValid = bcrypt.compareSync(password, userExist.password);
-    if (!isValid) {
-      res.status(400).json("Incorrect credentials");
-      return;
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    //destructuring unneccesary info out
-    const { age, password: pass, ...others } = userExist;
 
-    const token = jwt.sign(others, process.env.ACCESS_TOKEN!);
+    // Remove sensitive info
+    const { password, ...profile } = user;
 
-    res.status(200).json({ token });
+    return res.status(200).json({ profile });
   } catch (error) {
     next(error);
   }
 };
 
+
 // find user by ID
-export const fetchUserbyId = async (
+export const fetchStudentbyId = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -88,15 +92,15 @@ export const fetchUserbyId = async (
     }
 
     // chcecking if user is available
-    const user = await findUserByIdModel(parseInt(id));
+    const user = await findStudentByIdModel(id);
     if (!user) {
-      res.status(404).json("User not found");
+      res.status(404).json("Student not found");
       return;
     }
 
     res.status(200).json({
       success: true,
-      message: "user found",
+      message: "Student details found",
       data: user,
     });
   } catch (error) {
@@ -104,7 +108,7 @@ export const fetchUserbyId = async (
   }
 };
 
-export const updateUserDetails = async (
+export const updateStudentDetails = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -129,8 +133,8 @@ export const updateUserDetails = async (
       res.status(400).json("No data to update");
       return;
     }
-    const updatedUser = await updateUserModel({
-      id: parseInt(id),
+    const updatedStudent = await updateStudentModel({
+      id: id,
       age: data.age,
       email: data.email,
       firstname: data.firstname,
@@ -140,8 +144,8 @@ export const updateUserDetails = async (
 
     res.status(200).json({
       success: true,
-      mesage: "User details updated",
-      data: updatedUser,
+      mesage: "Student details updated",
+      data: updatedStudent,
     });
   } catch (error) {
     next(error);
