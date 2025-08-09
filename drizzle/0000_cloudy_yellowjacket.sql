@@ -11,7 +11,10 @@ CREATE TABLE "placements" (
 	"position_type" "position_type_enum" NOT NULL,
 	"salary_type" "salary_type_enum" NOT NULL,
 	"salary_amount" varchar(100) DEFAULT '' NOT NULL,
-	"recruiter_id" uuid NOT NULL
+	"recruiter_id" uuid NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "recruiters" (
@@ -22,8 +25,8 @@ CREATE TABLE "recruiters" (
 	"email" varchar(255) NOT NULL,
 	"password" varchar(255) NOT NULL,
 	"status" "role" DEFAULT 'Inactive' NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp,
 	CONSTRAINT "recruiters_email_unique" UNIQUE("email")
 );
@@ -35,8 +38,8 @@ CREATE TABLE "students" (
 	"email" varchar(255) NOT NULL,
 	"password" varchar(255) NOT NULL,
 	"status" "role" DEFAULT 'Inactive' NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
 	"deleted_at" timestamp,
 	CONSTRAINT "students_email_unique" UNIQUE("email")
 );

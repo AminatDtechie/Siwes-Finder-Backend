@@ -5,15 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1754739859529,
-      "tag": "0000_abandoned_captain_flint",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1754744788903,
-      "tag": "0001_cute_violations",
+      "when": 1754769892844,
+      "tag": "0000_cloudy_yellowjacket",
       "breakpoints": true
     }
   ]
