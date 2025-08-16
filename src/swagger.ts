@@ -29,6 +29,9 @@ const options: swaggerJSDoc.Options = {
         ],
         servers: [
             {
+                url: "https://siwes-finder-backend.onrender.com",
+            },
+            {
                 url: "http://localhost:3000",
             },
         ],
