@@ -28,17 +28,21 @@ export const signUpRecruiter = async (
     const hashPassword = bcrypt.hashSync(password, 10);
 
     // saving recruiter details to DB
-    const recruiter = await createRecruiterModel({
+    const recruiterArr = await createRecruiterModel({
       firstname,
       lastname,
       email,
       password: hashPassword,
     });
 
+    const recruiter = recruiterArr[0];
+
+    const { password: _ , ...data } = recruiter
+
     res.status(201).json({
       success: true,
       message: "Account created successfully",
-      data: recruiter,
+      data: data,
     });
   } catch (error) {
     next(error);

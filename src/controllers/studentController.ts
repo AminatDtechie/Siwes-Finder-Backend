@@ -29,17 +29,21 @@ export const signUpStudent = async (
     const hashPassword = bcrypt.hashSync(password, 10);
 
     // saving user details to DB
-    const user = await createStudentModel({
+    const studentArr = await createStudentModel({
       firstname,
       lastname,
       email,
       password: hashPassword,
     });
 
+    const student = studentArr[0];
+
+    const { password: _ , ...data } = student
+
     res.status(201).json({
       success: true,
       message: "Account created successfully",
-      data: user,
+      data: data,
     });
   } catch (error) {
     next(error);
