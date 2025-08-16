@@ -41,7 +41,7 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
         }
 
         // Remove sensitive data
-        const { password: pass, ...safeUser } = user;
+        const { password: _, ...safeUser } = user;
 
         // Sign JWT with role
         const token = jwt.sign(
