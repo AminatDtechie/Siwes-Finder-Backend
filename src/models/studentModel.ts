@@ -75,3 +75,4 @@ export const deleteStudentModel = async (id: string) => {
     .returning();
   return student;
 };
+

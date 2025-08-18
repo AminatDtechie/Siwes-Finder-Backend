@@ -6,8 +6,8 @@ import {
   updateStudentModel,
 } from "../models/studentModel";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { findRecruiterByEmailModel, findRecruiterByIdModel } from "../models/recruiterModel";
+import { sendEmail, generateVerificationEmail, generateVerificationToken } from '../utils/email';
 
 // sign up or register
 export const signUpStudent = async (
@@ -20,8 +20,8 @@ export const signUpStudent = async (
     // checking if account exist
     const studentExists = await findStudentByEmailModel(email);
     const recruiterExists = await findRecruiterByEmailModel(email);
-    
-    if (studentExists || recruiterExists ) {
+
+    if (studentExists || recruiterExists) {
       res.status(409).json("User exists");
       return;
     }
@@ -38,12 +38,17 @@ export const signUpStudent = async (
 
     const student = studentArr[0];
 
-    const { password: _ , ...data } = student
+    const { password: _, ...data } = student
+
+    const token = generateVerificationToken(data.id , "Student")
+    const verificationLink = `${process.env.BACKEND_URL}/verify-email?token=${token}`;
+    const html = generateVerificationEmail(data.firstname, verificationLink);
+
+    const mail = await sendEmail(data.email, "Welcome to Siwes Finder! Please verify your email", html)
 
     res.status(201).json({
       success: true,
-      message: "Account created successfully",
-      data: data,
+      message: "Account created successfully"
     });
   } catch (error) {
     next(error);

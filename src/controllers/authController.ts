@@ -5,13 +5,15 @@ import {
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { findStudentByEmailModel } from "../models/studentModel";
+import { generateVerificationEmail, generateVerificationToken, sendEmail, verifyVerificationToken } from "../utils/email";
+import { activateUser } from "../models/generalModel";
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
     try {
         let user: any = null;
-        let role: "Student" | "Recruiter" | null = null;
+        let role: "Student" | "Recruiter" = "Student";
 
         // Check recruiters table
         const recruiter = await findRecruiterByEmailModel(email);
@@ -34,6 +36,21 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             return res.status(404).json({ message: "Account not found" });
         }
 
+        // Check if account is activated
+        if (user.status !== "Active") {
+            // optionally resend token
+            const token = generateVerificationToken(user.id, role);
+            const verificationLink = `${process.env.BACKEND_URL}/verify-email?token=${token}`;
+            const html = generateVerificationEmail(user.firstname, verificationLink);
+            const mail = await sendEmail(user.email, "Verify your email to log in", html);
+
+            console.log( mail )
+            return res.status(403).json({
+                message: "Please verify your email. A new verification link has been sent.",
+            });
+
+        }
+
         // Compare password
         const isValid = bcrypt.compareSync(password, user.password);
         if (!isValid) {
@@ -54,8 +71,24 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             message: "Login successful",
             token,
             role,
+            data: safeUser
         });
     } catch (error) {
         next(error);
     }
+};
+
+
+export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
+    const { token } = req.query;
+    if (!token) return res.status(400).send("Invalid token");
+
+    const payload: any = verifyVerificationToken(token as string);
+    if (!payload) return res.status(400).send("Token expired or invalid");
+
+    const { id, role } = payload;
+
+    await activateUser(id, role);
+
+    res.send("Email verified successfully! You can now log in.");
 };

@@ -6,8 +6,8 @@ import {
   updateRecruiterModel,
 } from "../models/recruiterModel";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import { findStudentByEmailModel } from "../models/studentModel";
+import { generateVerificationToken, generateVerificationEmail, sendEmail } from "../utils/email";
 
 // sign up or register
 export const signUpRecruiter = async (
@@ -20,8 +20,10 @@ export const signUpRecruiter = async (
     // checking if account exist
     const recruiterExists = await findRecruiterByEmailModel(email);
     const studentExists = await findStudentByEmailModel(email);
-    if (recruiterExists || studentExists ) {
-      res.status(409).json("Email has already been used");
+    if (recruiterExists || studentExists) {
+      res.status(409).json({
+        message: "Email has already been used"
+      });
       return;
     }
     // hashing password
@@ -37,12 +39,19 @@ export const signUpRecruiter = async (
 
     const recruiter = recruiterArr[0];
 
-    const { password: _ , ...data } = recruiter
+    const { password: _, ...data } = recruiter
+
+
+    const token = generateVerificationToken(data.id, "Recruiter")
+    const verificationLink = `${process.env.BACKEND_URL}/verify-email?token=${token}`;
+    const html = generateVerificationEmail(data.firstname, verificationLink);
+
+    const mail = await sendEmail(data.email, "Welcome to Siwes Finder! Please verify your email", html)
+    console.log( mail )
 
     res.status(201).json({
       success: true,
-      message: "Account created successfully",
-      data: data,
+      message: "Account created successfully"
     });
   } catch (error) {
     next(error);
