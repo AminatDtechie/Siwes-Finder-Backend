@@ -7,7 +7,7 @@ export const studentRegisterSchema = z
   .object({
     firstname: z.string().min(1, "First name is required"),
     lastname: z.string().min(1, "Last name is required"),
-    email: z.email("Invalid email address"),
+    email: z.string().email("Invalid email address"), // fixed
     password: z.string().min(6, "Password must be at least 6 characters"),
   })
   .strict();
@@ -15,12 +15,12 @@ export const studentRegisterSchema = z
 export const recruiterRegisterSchema = z.object({
   firstname: z.string().min(1, "First name is required"),
   lastname: z.string().min(1, "Last name is required"),
-  email: z.email("Invalid email address"),
+  email: z.string().email("Invalid email address"), // fixed
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export const loginSchema = z.object({
-  email: z.email("Invalid email address"),
+  email: z.string().email("Invalid email address"), // fixed
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -30,10 +30,10 @@ export const createPlacementSchema = z.object({
   location: z.string().min(1, "Location is required"),
   duration: z.string().min(1, "Duration is required"),
   description: z.string().min(1, "Description is required"),
-  position_type: z.enum(["onsite", "remote", "hybrid"]),
-  salary_type: z.enum(["paid", "unpaid"]),
-  salary_amount: z.string().optional(), // can be empty string or omitted if unpaid
-  recruiter_id: z.uuid("Invalid recruiter ID"),
+  position_type: positionTypeEnum,
+  salary_type: salaryTypeEnum,
+  salary_amount: z.string().optional(),
+  recruiter_id: z.string().uuid("Invalid recruiter ID"), // fixed
 });
 
 export const placementQuerySchema = z.object({
