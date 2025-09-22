@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-const positionTypeEnum = z.enum(["onsite", "remote", "hybrid"]);
-const salaryTypeEnum = z.enum(["paid", "unpaid"]);
+const positionTypeEnum = z.enum(["onsite", "remote", "hybrid"], "Invalid type");
+const salaryTypeEnum = z.enum(["paid", "unpaid"], "Invalid type");
 
 export const studentRegisterSchema = z.object({
   firstname: z.string().min(1, "First name is required"),
