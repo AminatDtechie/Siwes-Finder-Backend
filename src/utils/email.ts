@@ -75,3 +75,17 @@ export const generateVerificationEmail = (
 
   return template;
 };
+
+export const generateLoginRedirectEmail = (
+  firstname: string,
+  loginLink: string
+) => {
+  const templatePath = path.join(
+    __dirname,
+    "../templates/loginRedirectEmail.html"
+  );
+  let template = fs.readFileSync(templatePath, "utf-8");
+  template = template.replace(/{{firstname}}/g, firstname);
+  template = template.replace(/{{loginLink}}/g, loginLink);
+  return template;
+};
