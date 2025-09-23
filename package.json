@@ -34,6 +34,7 @@
     "@types/nodemailer": "^7.0.1",
     "@types/pg": "^8.15.5",
     "drizzle-kit": "^0.31.4",
-    "tsx": "^4.20.3"
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
   }
 }
