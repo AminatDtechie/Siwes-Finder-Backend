@@ -106,10 +106,7 @@ export const verifyToken = async (
 
   // Optional: send user a "verified, go to login" email
   const loginLink = `${process.env.FRONTEND_URL}/login`;
-  const verifiedHtml = generateLoginRedirectEmail(payload.firstname, loginLink);
-  await sendEmail(payload.email, "Your email has been verified", verifiedHtml);
-
-  return res.json({
-    message: "Email verified successfully! You can now log in.",
-  });
+  const html = generateLoginRedirectEmail(payload?.firstname, loginLink);
+  // Send HTML response directly
+  res.status(200).send(html);
 };
