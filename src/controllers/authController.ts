@@ -5,7 +5,10 @@ import {
 } from "../models/recruiterModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { findStudentByEmailModel } from "../models/studentModel";
+import {
+  findStudentByEmailModel,
+  findStudentByIdModel,
+} from "../models/studentModel";
 import {
   generateLoginRedirectEmail,
   generateVerificationEmail,
@@ -90,8 +93,6 @@ export const login = async (
     next(error);
   }
 };
-
-// Verify email token
 export const verifyToken = async (
   req: Request,
   res: Response,
@@ -111,26 +112,50 @@ export const verifyToken = async (
   const payload: any = verifyVerificationToken(token as string);
 
   if (!payload) {
-  // Token expired or invalid – show simple expired message
-  return res.status(400).send(`
-    <div style="text-align:center; padding:50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-      <h1 style="color:#dc3545;">Token Expired</h1>
-      <p style="font-size:16px; color:#555;">
-        Your verification link has expired. Please contact support or try signing up again.
-      </p>
-    </div>
-  `);
-}
-
+    return res.status(400).send(`
+      <div style="text-align:center; padding:50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+        <h1 style="color:#dc3545;">Token Expired</h1>
+        <p style="font-size:16px; color:#555;">
+          Your verification link has expired. Please contact support or try signing up again.
+        </p>
+      </div>
+    `);
+  }
 
   const { id, role } = payload;
 
   try {
+    // First check if user exists & is already verified
+    const user =
+      role === "recruiter"
+        ? await findRecruiterByIdModel(id)
+        : await findStudentByIdModel(id);
+
+    if (!user) {
+      return res.status(404).send(`
+        <div style="text-align:center; padding:50px;">
+          <h1>User not found</h1>
+        </div>
+      `);
+    }
+
+    if (user?.status === "Active") {
+      // Already verified case
+      const loginLink = `${process.env.FRONTEND_URL}/login`;
+      return res.status(200).send(`
+        <div style="text-align:center; padding:50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+          <h1>Email Already Verified</h1>
+          <p>You can now log in to your account.</p>
+          <a href="${loginLink}" style="color: #0d6efd;">Go to Login</a>
+        </div>
+      `);
+    }
+
+    // Only activate if not already verified
     await activateUser(id, role);
 
-    const user = await findRecruiterByIdModel(id); // or student model
     const loginLink = `${process.env.FRONTEND_URL}/login`;
-    const html = generateLoginRedirectEmail(user?.firstname, loginLink);
+    const html = generateLoginRedirectEmail(user.firstname, loginLink);
 
     res.status(200).send(html);
   } catch (error) {

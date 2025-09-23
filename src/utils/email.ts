@@ -35,7 +35,7 @@ export const verifyTransporter = async () => {
 export const sendEmail = async (to: string, subject: string, body: string) => {
   try {
     const info = await transporter.sendMail({
-      from: `"Siwes Finder" <${process.env.GOOGLE_APP_MAIL}>`,
+      from: `"Siwes finder" <${process.env.GOOGLE_APP_MAIL}>`,
       to,
       subject,
       html: body,

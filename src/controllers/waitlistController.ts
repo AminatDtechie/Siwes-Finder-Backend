@@ -26,7 +26,7 @@ export const joinWaitlist = async (
 
     // Send confirmation email
     const html = waitlistConfirmationEmail(name || "there");
-    await sendEmail(email, "Welcome to the Siwes Finder Waitlist", html);
+    await sendEmail(email, "🎉 You’re on the SIWES Finder waitlist!", html);
 
     res.status(201).json({
       success: true,

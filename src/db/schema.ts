@@ -65,6 +65,5 @@ export const waitlistTable = pgTable("waitlist", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 255 }).default(""), // optional
-  status: statusEnum("status").notNull().default("Inactive"), // optional, e.g., for notified or confirmed
   ...timestamps(),
 });
