@@ -64,7 +64,7 @@ export const generateVerificationEmail = (
   firstname: string,
   verificationLink: string
 ) => {
-  const templatePath = path.join(
+  const templatePath = path.resolve(
     __dirname,
     "../templates/verificationEmail.html"
   );
@@ -80,9 +80,9 @@ export const generateLoginRedirectEmail = (
   firstname: string,
   loginLink: string
 ) => {
-  const templatePath = path.join(
+  const templatePath = path.resolve(
     __dirname,
-    "../templates/loginRedirectEmail.html"
+    "../templates/verificationEmail.html"
   );
   let template = fs.readFileSync(templatePath, "utf-8");
   template = template.replace(/{{firstname}}/g, firstname);
