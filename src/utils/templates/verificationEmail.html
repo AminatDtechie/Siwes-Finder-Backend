@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Verify Your Email</title>
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      border-radius: 10px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #0d6efd;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    a.button {
+      display: inline-block;
+      padding: 14px 28px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #0d6efd;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    hr {
+      margin: 30px 0;
+      border: none;
+      border-top: 1px solid #eee;
+    }
+
+    .small {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .link {
+      color: #0d6efd;
+      word-break: break-all;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Hello {{firstname}}, Welcome to Siwes Finder!</h1>
+    <p>Thank you for joining our platform. To get started and secure your account, please verify your email address by
+      clicking the button below.</p>
+    <a href="{{verificationLink}}" class="button">Verify Your Email</a>
+    <p>If the button doesn’t work, copy and paste the following link into your browser:</p>
+    <p class="link">{{verificationLink}}</p>
+    <hr>
+    <p class="small">If you did not create an account on Siwes Finder, please ignore this email. This message was sent
+      automatically; please do not reply.</p>
+  </div>
+</body>
+
+</html>
