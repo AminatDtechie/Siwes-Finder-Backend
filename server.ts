@@ -4,9 +4,11 @@ import { errorHandler } from "./src/utils/middleware";
 import router from "./src/routes";
 import { swaggerDocs } from "./src/swagger";
 import cors from "cors";
+import { verifyTransporter } from "./src/utils/email";
 
 const app = express();
 dotenv.config();
+verifyTransporter(); // check email setup on startup
 const port = process.env.PORT;
 
 app.use(
@@ -26,7 +28,7 @@ app.use(
 app.use(express.json());
 
 app.get("/", (req: Request, res: Response) => {
-  res.json("Hello World !!!");
+  res.type("text").send("🚀 Siwes Finder API is running");
 });
 
 app.use("/api/v1", router);

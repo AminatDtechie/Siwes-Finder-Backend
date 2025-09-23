@@ -1,26 +1,64 @@
-import { Resend } from "resend";
+// src/utils/email.ts
+import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
 const JWT_SECRET = process.env.ACCESS_TOKEN!;
 
-// Send email
+// Create transporter using Gmail SMTP with SSL (port 465)
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true, // SSL
+  auth: {
+    user: process.env.GOOGLE_APP_MAIL, // your Gmail
+    pass: process.env.GOOGLE_APP_PASSWORD, // App Password
+  },
+});
+
+// Verify transporter connection
+export const verifyTransporter = async () => {
+  try {
+    await transporter.verify();
+    console.log("✅ Mail server is ready to take our messages");
+  } catch (err) {
+    console.error("❌ Failed to verify transporter:", err);
+  }
+};
+
+// Send email function
 export const sendEmail = async (to: string, subject: string, body: string) => {
   try {
-    const data = await resend.emails.send({
-      from: "Siwes Finder <no-reply@siwesfinder.com>",
+    const info = await transporter.sendMail({
+      from: `"Siwes Finder" <${process.env.GOOGLE_APP_MAIL}>`,
       to,
       subject,
       html: body,
     });
-    return { success: true, data };
+    return { success: true, info };
   } catch (err) {
-    console.error("Error sending email:", err);
+    console.error("❌ Error sending email:", err);
     return { success: false, error: err };
   }
 };
 
-// Email template
+// Generate JWT token for verification
+export const generateVerificationToken = (
+  id: string,
+  role: "Student" | "Recruiter"
+) => {
+  return jwt.sign({ id, role }, JWT_SECRET, { expiresIn: "24h" });
+};
+
+// Verify token
+export const verifyVerificationToken = (token: string) => {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch {
+    return null;
+  }
+};
+
+// HTML template for verification email
 export const generateVerificationEmail = (
   firstname: string,
   verificationLink: string
@@ -41,21 +79,4 @@ export const generateVerificationEmail = (
     <p style="font-size: 12px; color: #666;">If you didn’t sign up for Siwes Finder, you can ignore this email.</p>
   </div>
   `;
-};
-
-// Generate JWT verification token
-export const generateVerificationToken = (
-  id: string,
-  role: "Student" | "Recruiter"
-) => {
-  return jwt.sign({ id, role }, JWT_SECRET, { expiresIn: "24h" });
-};
-
-// Verify token
-export const verifyVerificationToken = (token: string) => {
-  try {
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
 };

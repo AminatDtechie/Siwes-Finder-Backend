@@ -1,13 +1,18 @@
 import { NextFunction, Request, Response } from "express";
 import {
   createRecruiterModel,
+  deleteRecruiterModel,
   findRecruiterByEmailModel,
   findRecruiterByIdModel,
   updateRecruiterModel,
 } from "../models/recruiterModel";
 import bcrypt from "bcryptjs";
 import { findStudentByEmailModel } from "../models/studentModel";
-import { generateVerificationToken, generateVerificationEmail, sendEmail } from "../utils/email";
+import {
+  generateVerificationToken,
+  generateVerificationEmail,
+  sendEmail,
+} from "../utils/email";
 
 // sign up or register
 export const signUpRecruiter = async (
@@ -22,7 +27,7 @@ export const signUpRecruiter = async (
     const studentExists = await findStudentByEmailModel(email);
     if (recruiterExists || studentExists) {
       res.status(409).json({
-        message: "Email has already been used"
+        message: "Email has already been used",
       });
       return;
     }
@@ -39,25 +44,34 @@ export const signUpRecruiter = async (
 
     const recruiter = recruiterArr[0];
 
-    const { password: _, ...data } = recruiter
+    const { password: _, ...data } = recruiter;
 
-
-    const token = generateVerificationToken(data.id, "Recruiter")
+    const token = generateVerificationToken(data.id, "Recruiter");
     const verificationLink = `${process.env.BACKEND_URL}/verify-email?token=${token}`;
     const html = generateVerificationEmail(data.firstname, verificationLink);
 
-    const mail = await sendEmail(data.email, "Welcome to Siwes Finder! Please verify your email", html)
-    console.log( mail )
+    const mail = await sendEmail(
+      data.email,
+      "Welcome to Siwes Finder! Please verify your email",
+      html
+    );
+    if (mail.success) {
+      console.log(mail);
 
-    res.status(201).json({
-      success: true,
-      message: "Account created successfully"
-    });
+      res.status(201).json({
+        success: true,
+        message:
+          "Account created successfully. Please check your email to verify your account before logging in.",
+        data: {
+          email: data.email,
+          firstname: data.firstname,
+        },
+      });
+    }
   } catch (error) {
     next(error);
   }
 };
-
 
 // find user by ID
 export const fetchRecruiterbyId = async (
@@ -84,6 +98,25 @@ export const fetchRecruiterbyId = async (
       success: true,
       message: "user found",
       data: user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+import { fetchRecruitersModel } from "../models/recruiterModel"; // make sure this exists
+
+export const fetchRecruiters = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const recruiters = await fetchRecruitersModel(); // fetch from DB
+    res.status(200).json({
+      success: true,
+      message: "Recruiters fetched successfully",
+      data: recruiters,
     });
   } catch (error) {
     next(error);
@@ -128,6 +161,42 @@ export const updateRecruiterDetails = async (
       success: true,
       mesage: "User details updated",
       data: updatedRecruiter,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteRecruiterDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: "Recruiter ID is required to delete",
+    });
+  }
+
+  try {
+    // Check if recruiter exists
+    const user = await findRecruiterByIdModel(id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Recruiter not found",
+      });
+    }
+
+    // Delete recruiter
+    await deleteRecruiterModel(id);
+
+    res.status(200).json({
+      success: true,
+      message: "Recruiter deleted successfully",
     });
   } catch (error) {
     next(error);

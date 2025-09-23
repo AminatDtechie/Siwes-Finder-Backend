@@ -75,3 +75,8 @@ export const deleteRecruiterModel = async (id: string) => {
     .returning();
   return recruiter;
 };
+
+export const fetchRecruitersModel = async () => {
+  const recruiters = await db.select().from(recruitersTable);
+  return recruiters;
+};

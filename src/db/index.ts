@@ -9,4 +9,17 @@ const pool = new Pool({
 
 const db = drizzle(pool, { logger: true });
 
+// ✅ function to test DB connection
+export async function testDbConnection() {
+  try {
+    const client = await pool.connect();
+    await client.query("SELECT NOW()"); // simple test query
+    client.release();
+    console.log("✅ Database connected successfully");
+  } catch (err) {
+    console.error("❌ Database connection failed:", err);
+    process.exit(1); // exit app if db is critical
+  }
+}
+testDbConnection();
 export { db };
