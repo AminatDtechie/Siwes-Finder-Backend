@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { findRecruiterByEmailModel } from "../models/recruiterModel";
+import {
+  findRecruiterByEmailModel,
+  findRecruiterByIdModel,
+} from "../models/recruiterModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { findStudentByEmailModel } from "../models/studentModel";
@@ -104,9 +107,10 @@ export const verifyToken = async (
   const { id, role } = payload;
   await activateUser(id, role);
 
+  const user = await findRecruiterByIdModel(id);
   // Optional: send user a "verified, go to login" email
   const loginLink = `${process.env.FRONTEND_URL}/login`;
-  const html = generateLoginRedirectEmail(payload?.firstname, loginLink);
+  const html = generateLoginRedirectEmail(user?.firstname, loginLink);
   // Send HTML response directly
   res.status(200).send(html);
 };

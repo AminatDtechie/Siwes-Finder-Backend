@@ -44,4 +44,15 @@ CREATE TABLE "students" (
 	CONSTRAINT "students_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
+CREATE TABLE "waitlist" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"name" varchar(255) DEFAULT '',
+	"status" "role" DEFAULT 'Inactive' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
+	CONSTRAINT "waitlist_email_unique" UNIQUE("email")
+);
+--> statement-breakpoint
 ALTER TABLE "placements" ADD CONSTRAINT "placements_recruiter_id_recruiters_id_fk" FOREIGN KEY ("recruiter_id") REFERENCES "public"."recruiters"("id") ON DELETE no action ON UPDATE no action;

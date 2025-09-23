@@ -50,3 +50,21 @@ export const loginRedirectEmail = (firstname: string, loginLink: string) => `
   </div>
 </div>
 `;
+
+export const waitlistConfirmationEmail = (name: string) => `
+<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9f9f9; padding: 30px; color: #333;">
+  <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; padding: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+    <h1 style="color: #0d6efd; font-size: 24px; margin-bottom: 20px;">Hello ${name},</h1>
+    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      Thank you for joining the Siwes Finder waitlist! 🎉
+    </p>
+    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+      We’ll notify you as soon as new opportunities or updates are available. Stay tuned!
+    </p>
+    <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
+    <p style="font-size: 12px; color: #999;">
+      If you didn’t request this, please ignore this email. This message was sent automatically; please do not reply.
+    </p>
+  </div>
+</div>
+`;
