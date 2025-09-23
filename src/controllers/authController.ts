@@ -98,19 +98,42 @@ export const verifyToken = async (
   next: NextFunction
 ) => {
   const { token } = req.query;
-  if (!token) return res.status(400).json({ message: "Invalid token" });
+
+  if (!token) {
+    return res.status(400).send(`
+      <div style="text-align:center; padding:50px;">
+        <h1>Invalid token</h1>
+        <p>The verification link is invalid.</p>
+      </div>
+    `);
+  }
 
   const payload: any = verifyVerificationToken(token as string);
-  if (!payload)
-    return res.status(400).json({ message: "Token expired or invalid" });
+
+  if (!payload) {
+  // Token expired or invalid – show simple expired message
+  return res.status(400).send(`
+    <div style="text-align:center; padding:50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
+      <h1 style="color:#dc3545;">Token Expired</h1>
+      <p style="font-size:16px; color:#555;">
+        Your verification link has expired. Please contact support or try signing up again.
+      </p>
+    </div>
+  `);
+}
+
 
   const { id, role } = payload;
-  await activateUser(id, role);
 
-  const user = await findRecruiterByIdModel(id);
-  // Optional: send user a "verified, go to login" email
-  const loginLink = `${process.env.FRONTEND_URL}/login`;
-  const html = generateLoginRedirectEmail(user?.firstname, loginLink);
-  // Send HTML response directly
-  res.status(200).send(html);
+  try {
+    await activateUser(id, role);
+
+    const user = await findRecruiterByIdModel(id); // or student model
+    const loginLink = `${process.env.FRONTEND_URL}/login`;
+    const html = generateLoginRedirectEmail(user?.firstname, loginLink);
+
+    res.status(200).send(html);
+  } catch (error) {
+    next(error);
+  }
 };
