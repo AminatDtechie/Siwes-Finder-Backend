@@ -3,6 +3,10 @@ import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import path from "path";
 import fs from "fs";
+import {
+  loginRedirectEmail,
+  verificationEmail,
+} from "./templates/emailTemplates";
 
 const JWT_SECRET = process.env.ACCESS_TOKEN!;
 
@@ -60,32 +64,13 @@ export const verifyVerificationToken = (token: string) => {
   }
 };
 
+// Use template functions
 export const generateVerificationEmail = (
   firstname: string,
   verificationLink: string
-) => {
-  const templatePath = path.resolve(
-    __dirname,
-    "../templates/verificationEmail.html"
-  );
-  let template = fs.readFileSync(templatePath, "utf-8");
-
-  template = template.replace(/{{firstname}}/g, firstname);
-  template = template.replace(/{{verificationLink}}/g, verificationLink);
-
-  return template;
-};
+) => verificationEmail(firstname, verificationLink);
 
 export const generateLoginRedirectEmail = (
   firstname: string,
   loginLink: string
-) => {
-  const templatePath = path.resolve(
-    __dirname,
-    "../templates/verificationEmail.html"
-  );
-  let template = fs.readFileSync(templatePath, "utf-8");
-  template = template.replace(/{{firstname}}/g, firstname);
-  template = template.replace(/{{loginLink}}/g, loginLink);
-  return template;
-};
+) => loginRedirectEmail(firstname, loginLink);
