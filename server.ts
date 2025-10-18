@@ -15,7 +15,7 @@ app.use(
   cors({
     origin: [
       "https://siwes-finder-ten.vercel.app",
-      'https://siwesfinderr.vercel.app/',
+      'https://siwesfinderr.vercel.app',
       "http://localhost:3000",
       "http://127.0.0.1:3000",
       "http://localhost:5173",
