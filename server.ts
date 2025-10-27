@@ -5,6 +5,7 @@ import router from "./src/routes";
 import { swaggerDocs } from "./src/swagger";
 import cors from "cors";
 import { verifyTransporter } from "./src/utils/email";
+import path from "path";
 
 const app = express();
 dotenv.config();
@@ -15,7 +16,7 @@ app.use(
   cors({
     origin: [
       "https://siwes-finder-ten.vercel.app",
-      'https://siwesfinderr.vercel.app',
+      "https://siwesfinderr.vercel.app",
       "http://localhost:3000",
       "http://127.0.0.1:3000",
       "http://localhost:5173",
@@ -33,6 +34,8 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/api/v1", router);
+// ✅ Serve static files (important!)
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(errorHandler);
 // Swagger Docs
