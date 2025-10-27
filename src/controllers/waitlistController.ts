@@ -15,6 +15,13 @@ export const joinWaitlist = async (
   const { email, name } = req.body;
 
   try {
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
     const existing = await findWaitlistByEmail(email);
     if (existing) {
       return res
@@ -22,7 +29,7 @@ export const joinWaitlist = async (
         .json({ success: false, message: "You are already on the waitlist" });
     }
 
-    const newEntry = await createWaitlistEntry(email, name);
+    const newEntry = await createWaitlistEntry(email, name || null);
 
     // Send confirmation email
     const html = waitlistConfirmationEmail(name || "there");

@@ -52,46 +52,56 @@ export const loginRedirectEmail = (firstname: string, loginLink: string) => `
 `;
 
 export const waitlistConfirmationEmail = (name: string) => `
-<div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f9f9f9; padding: 30px; color: #333;">
-  <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; padding: 40px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-    <h1 style="color: #0d6efd; font-size: 24px; margin-bottom: 20px;">Hi ${
-      name || "there"
-    }, 🎉</h1>
+  <div style="font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f6f8; padding: 40px; color: #2d2d2d;">
+    <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+      
+      <!-- Header -->
+      <div style="background-color: #eef5ff; padding: 30px; text-align: center;">
+        <img src="${
+          process.env.BACKEND_URL
+        }/public/logo-white.png" alt="SIWES Finder" width="40" style="vertical-align: middle; margin-bottom: 10px;" />
+        <h2 style="font-size: 22px; color: #0d6efd; font-weight: 700; margin: 0;">SIWES Finder</h2>
+      </div>
 
-    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-      Thanks for signing up! 🚀 You’re officially on the <strong>SIWES Finder</strong> waitlist.
-    </p>
+      <!-- Body -->
+      <div style="padding: 40px 30px;">
+        <p style="font-size: 18px; margin-bottom: 16px;">🎉 You’re officially on the waitlist!</p>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">Hi <strong>${
+          name || "there"
+        }</strong>,</p>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">
+          Thank you for joining the <strong>SIWES Finder</strong> waitlist! We’re thrilled to have you as part of the next generation of innovators shaping the future of industrial training across Nigeria.
+        </p>
 
-    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-      That means:
-      <ul style="margin: 15px 0; padding-left: 20px; font-size: 15px; line-height: 1.6;">
-        <li>✅ You’ll be among the first to access verified SIWES placements.</li>
-        <li>✅ You’ll get updates as we get closer to launch.</li>
-        <li>✅ You’re now part of the movement to make IT/SIWES stress-free for students in Nigeria.</li>
-      </ul>
-    </p>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">
+          You’ll be among the first to explore verified SIWES opportunities, connect with employers, and access the best internship listings once we launch.
+        </p>
 
-    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
-      While you wait, join us on socials to keep up with tips, updates, and behind-the-scenes:
-    </p>
+        <p style="font-size: 16px; color: #333; line-height: 1.6;">
+          Stay tuned — we’ll keep you posted on updates and early access!
+        </p>
 
-    <p style="font-size: 15px; margin-bottom: 25px;">
-      👉 <a href="https://x.com/SiwesfinderHQ" style="color:#0d6efd; text-decoration:none;">Twitter/X</a><br>
-      👉 <a href="https://www.linkedin.com/company/siwes-finder/" style="color:#0d6efd; text-decoration:none;">LinkedIn</a>
-    </p>
+        <div style="margin-top: 35px; text-align: center;">
+          <p style="font-size: 15px; color: #555; margin-bottom: 10px;">Follow us for updates:</p>
+          <a href="https://x.com/SiwesfinderHQ" style="margin: 0 8px; display: inline-block;">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733579.png" width="24" alt="Twitter" />
+          </a>
+          <a href="https://www.linkedin.com/company/siwes-finder/" style="margin: 0 8px; display: inline-block;">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733561.png" width="24" alt="LinkedIn" />
+          </a>
+          <a href="https://www.instagram.com/siwesfinder" style="margin: 0 8px; display: inline-block;">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733558.png" width="24" alt="Instagram" />
+          </a>
+        </div>
 
-    <p style="font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
-      We can’t wait to welcome you in!
-    </p>
+        <p style="font-size: 14px; color: #999; text-align: center; margin-top: 40px;">
+          – The SIWES Finder Team 💡
+        </p>
+      </div>
+    </div>
 
-    <p style="font-size: 16px; font-weight: bold; color: #0d6efd;">
-      – Team SIWES Finder 💡
-    </p>
-
-    <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
-    <p style="font-size: 12px; color: #999;">
+    <p style="font-size: 12px; color: #999; text-align: center; margin-top: 25px;">
       If you didn’t request this, please ignore this email. This message was sent automatically; please do not reply.
     </p>
   </div>
-</div>
 `;
