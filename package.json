@@ -33,7 +33,8 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/nodemailer": "^7.0.1",
     "@types/pg": "^8.15.5",
-    "drizzle-kit": "^0.31.4",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "drizzle-kit": "^0.18.1",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   }

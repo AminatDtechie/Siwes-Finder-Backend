@@ -6,6 +6,11 @@ import { swaggerDocs } from "./src/swagger";
 import cors from "cors";
 import { verifyTransporter } from "./src/utils/email";
 import path from "path";
+import { fileURLToPath } from "url";
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 dotenv.config();
