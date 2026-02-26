@@ -6,7 +6,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /login:
+ * /api/v1/login:
  *   post:
  *     summary: Authenticate a user and return a JWT token
  *     description: Allows a student or recruiter to log in using their email and password. Returns a JWT and user info on success.
@@ -60,7 +60,7 @@ router.post("/login", validate(loginSchema), login);
 
 /**
  * @swagger
- * /verify-email:
+ * /api/v1/verify-email:
  *   get:
  *     summary: Verify an email address using a token
  *     tags:

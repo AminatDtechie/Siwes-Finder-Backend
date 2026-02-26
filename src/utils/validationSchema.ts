@@ -33,7 +33,7 @@ export const createPlacementSchema = z.object({
   position_type: positionTypeEnum,
   salary_type: salaryTypeEnum,
   salary_amount: z.string().optional(),
-  recruiter_id: z.string().uuid("Invalid recruiter ID"), // fixed
+  //recruiter_id: z.string().uuid("Invalid recruiter ID"), // fixed
 });
 
 export const placementQuerySchema = z.object({

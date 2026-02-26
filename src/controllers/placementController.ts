@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { createPlacementModel, findAllPlacementsModel, findPlacementById } from "../models/placementModel";
+import { findRecruiterByIdModel } from "../models/recruiterModel";
 import { placementQuerySchema } from "../utils/validationSchema";
 
 
@@ -18,6 +19,25 @@ export const createPlacement = async (req: Request, res: Response, next: NextFun
             recruiter_id,
         } = req.body;
 
+        // Require authentication and ensure the actor is a valid recruiter
+        const actor = (req as any).user;
+        if (!actor) {
+            return res.status(401).json({ success: false, message: "Authentication required" });
+        }
+
+        if (actor.role !== "Recruiter") {
+            return res.status(403).json({ success: false, message: "Only recruiters can create placements" });
+        }
+
+        // Verify recruiter exists in DB (prevents fake or deleted ids)
+        const recruiterRecord = await findRecruiterByIdModel(actor.id);
+        if (!recruiterRecord) {
+            return res.status(404).json({ success: false, message: "Recruiter not found or invalid" });
+        }
+
+        // Use the authenticated recruiter's id for the placement
+        const actorRecruiterId = actor.id;
+
         const newPlacement = await createPlacementModel({
             industry,
             position_title,
@@ -27,7 +47,7 @@ export const createPlacement = async (req: Request, res: Response, next: NextFun
             position_type,
             salary_type,
             salary_amount,
-            recruiter_id,
+            recruiter_id: actorRecruiterId,
         });
 
         res.status(201).json({

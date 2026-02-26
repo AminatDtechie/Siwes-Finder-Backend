@@ -10,7 +10,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /register:
+ * /api/v1/recruiters/register:
  *   post:
  *     summary: Register a new recruiter
  *     description: Creates a recruiter account with first name, last name, email, and password.
@@ -61,7 +61,7 @@ const router = express.Router();
 router.post("/register", validate(recruiterRegisterSchema), signUpRecruiter);
 /**
  * @swagger
- * /:
+ * /api/v1/recruiters/:
  *   get:
  *     summary: Retrieve all recruiters
  *     tags:
@@ -97,7 +97,7 @@ router.post("/register", validate(recruiterRegisterSchema), signUpRecruiter);
 router.get("/", fetchRecruiters);
 /**
  * @swagger
- * /{id}:
+ * /api/v1/recruiters/{id}:
  *   delete:
  *     summary: Delete a recruiter by ID
  *     tags:

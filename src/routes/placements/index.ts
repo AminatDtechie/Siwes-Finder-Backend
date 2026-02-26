@@ -187,7 +187,6 @@ router.get("/:id", fetchPlacementById);
  *               - position_type
  *               - salary_type
  *               - salary_amount
- *               - recruiter_id
  *             properties:
  *               industry:
  *                 type: string
@@ -215,10 +214,6 @@ router.get("/:id", fetchPlacementById);
  *               salary_amount:
  *                 type: string
  *                 example: ₦100,000/month
- *               recruiter_id:
- *                 type: string
- *                 format: uuid
- *                 example: afa3cadf-8189-4435-bb1e-e0407b1e963c
  *     responses:
  *       201:
  *         description: Placement created successfully
