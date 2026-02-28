@@ -7,7 +7,8 @@ import cors from "cors";
 import { verifyTransporter } from "./src/utils/email";
 import path from "path";
 import { fileURLToPath } from "url";
-
+import passport from "passport";
+import "./src/config/passport";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,7 +38,7 @@ app.use(express.json());
 app.get("/", (req: Request, res: Response) => {
   res.type("text").send("🚀 Siwes Finder API is running");
 });
-
+app.use(passport.initialize());
 app.use("/api/v1", router);
 // ✅ Serve static files (important!)
 app.use("/public", express.static(path.join(__dirname, "public")));

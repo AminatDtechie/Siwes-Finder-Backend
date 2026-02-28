@@ -6,6 +6,7 @@ import {
   text,
   uuid,
   serial,
+  boolean,
   timestamp,
 } from "drizzle-orm/pg-core";
 import { timestamps } from "./column.helpers";
@@ -17,14 +18,16 @@ export const positionTypeEnum = pgEnum("position_type_enum", [
   "hybrid",
 ]);
 export const salaryTypeEnum = pgEnum("salary_type_enum", ["paid", "unpaid"]);
-
+export const authProviderEnum = pgEnum("auth_provider", ["email", "google"]);
 // students table
 export const studentsTable = pgTable("students", {
   id: uuid().primaryKey().defaultRandom(),
   firstname: varchar({ length: 255 }).notNull(),
   lastname: varchar({ length: 255 }).notNull(),
   email: varchar({ length: 255 }).notNull().unique(),
-  password: varchar({ length: 255 }).notNull(),
+  password: varchar({ length: 255 }), // nullable for google users
+  google_id: varchar({ length: 255 }).unique(),
+  auth_provider: authProviderEnum("auth_provider").notNull().default("email"),
   status: statusEnum("status").notNull().default("Inactive"),
   ...timestamps(),
 });
@@ -36,10 +39,14 @@ export const recruitersTable = pgTable("recruiters", {
   lastname: varchar("lastname", { length: 255 }).notNull(),
   company: varchar("company", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull().unique(),
-  password: varchar("password", { length: 255 }).notNull(),
+  password: varchar("password", { length: 255 }), // nullable for google users
+  google_id: varchar("google_id", { length: 255 }).unique(),
+  auth_provider: authProviderEnum("auth_provider").notNull().default("email"),
   status: statusEnum("status").notNull().default("Inactive"),
+  isVerified: boolean("is_verified").notNull().default(false),
   ...timestamps(),
 });
+
 
 // placements table
 export const placementsTable = pgTable("placements", {
