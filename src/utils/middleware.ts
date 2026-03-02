@@ -51,6 +51,32 @@ export const verifyAuthentication = async (
 };
 
 
+// This middleware allows both authenticated and unauthenticated users to access routes. If a valid JWT is provided, it attaches the user info to req.user. If no token or an invalid token is present, it simply moves on without setting req.user, allowing the route handler to treat them as a guest.
+export const checkAuthOptional = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+
+  if (!token) {
+    // No token? No problem. Just move to the next step as a guest.
+    return next();
+  }
+
+  try {
+    const valid = jwt.verify(token, process.env.ACCESS_TOKEN!);
+    req.user = valid; // Attach user info if the token is legit
+    next();
+  } catch (error) {
+    // If token is expired/invalid, we still let them through, 
+    // but req.user remains undefined (Guest mode).
+    next();
+  }
+};
+
+
 
 export function prettifyZodError(err: ZodError) {
   const flattened = err.flatten();

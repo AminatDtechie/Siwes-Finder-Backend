@@ -3,3 +3,7 @@
 
 # installation files 
 node_modules
+backup.sql
+dump.sql
+.idea/
+.env

@@ -83,12 +83,29 @@ export const getAllPlacements = async (
         // The validated data is now correctly typed
         const filters = parsedFilters.data;
 
+        // 2. Fetch Data from DB
         const placements = await findAllPlacementsModel(filters);
+
+        // 3. Apply Professional "Gated" Logic
+        // If req.user is undefined, the user is a guest.
+        const processedData = !req.user 
+            ? placements.map((placement, index) => {
+                if (index >= 2) {
+                    return {
+                        ...placement,
+                        description: "Please login to see the full details of this placement.",
+                        // Optional: You can also hide other sensitive fields here
+                        isLocked: true // Helper flag for the frontend
+                    };
+                }
+                return { ...placement, isLocked: false };
+            })
+            : placements.map(p => ({ ...p, isLocked: false }));
 
         res.status(200).json({
             success: true,
             message: "Placements fetched successfully",
-            data: placements,
+            data: processedData,
         });
     } catch (error) {
         next(error);
@@ -104,23 +121,28 @@ export const fetchPlacementById = async (
 ) => {
     const { id } = req.params;
     try {
-        //checking if id is passed in
         if (!id) {
-            res.status(400).json("Id is neded to continue");
-            return;
+            return res.status(400).json("Id is needed to continue");
         }
 
-        // chcecking if placement is available
         const placement = await findPlacementById(id);
         if (!placement) {
-            res.status(404).json("Placement not found");
-            return;
+            return res.status(404).json("Placement not found");
         }
+
+        // Apply the same logic: If guest, mask the description
+        const processedData = !req.user 
+            ? {
+                ...placement,
+                description: "Please login to see the full details of this placement.",
+                isLocked: true
+              }
+            : { ...placement, isLocked: false };
 
         res.status(200).json({
             success: true,
             message: "Placement details found",
-            data: placement,
+            data: processedData,
         });
     } catch (error) {
         next(error);

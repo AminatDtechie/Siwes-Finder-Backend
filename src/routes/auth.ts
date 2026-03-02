@@ -181,7 +181,7 @@ router.get(
 
     passport.authenticate(strategy, {
       session: false,
-      failureRedirect: "/api/v1/auth/failed",
+      failureRedirect: `${process.env.FRONTEND_URL}/auth/relay?error=true`,
     })(req, res, next);
   },
   (req, res) => {
@@ -195,7 +195,10 @@ router.get(
       { expiresIn: "24h" }
     );
 
-    res.status(200).json({ message: "Login successful", token, role, data: safeUser });
+    // Redirect to relay page with token in URL
+    res.redirect(
+      `${process.env.FRONTEND_URL}/auth/relay?token=${token}&role=${role}`
+    );
   }
 );
 

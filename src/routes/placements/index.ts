@@ -1,5 +1,5 @@
 import express from "express";
-import { authorizeRole, validate, verifyAuthentication } from "../../utils/middleware";
+import { authorizeRole, checkAuthOptional, validate, verifyAuthentication } from "../../utils/middleware";
 import { createPlacement, fetchPlacementById, getAllPlacements } from "../../controllers/placementController";
 import { createPlacementSchema } from "../../utils/validationSchema";
 const router = express.Router();
@@ -63,7 +63,7 @@ const router = express.Router();
  *                   items:
  *                     $ref: '#/components/schemas/Placement'
  */
-router.get("/", getAllPlacements);
+router.get("/", checkAuthOptional, getAllPlacements);
 
 
 /**
@@ -161,7 +161,7 @@ router.get("/", getAllPlacements);
  *               type: string
  *               example: "Placement not found"
  */
-router.get("/:id", fetchPlacementById);
+router.get("/:id", checkAuthOptional, fetchPlacementById);
 
 
 /**
