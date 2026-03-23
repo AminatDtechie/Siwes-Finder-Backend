@@ -15,7 +15,7 @@ const port = process.env.PORT;
 app.use(
   cors({
     origin: [
-      "*siwesfinder.xyz",
+      "https://waitlist.siwesfinder.xyz",
       "https://siwes-finder-ten.vercel.app",
       "https://siwesfinderr.vercel.app",
       "http://localhost:3000",
